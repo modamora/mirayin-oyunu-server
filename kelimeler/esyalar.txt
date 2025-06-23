@@ -1,0 +1,629 @@
+Ahize
+Afiş
+Abajur
+Albüm
+Amortisör
+Araba
+Atlas
+Abaküs
+Adaptör
+Ağızlık
+Akordeon
+Alet kutusu
+Alyans
+Amplifikatör
+Amortisör
+Aplik
+Askı
+Ayak iskemlesi
+Ayakkabı dolabı
+Askı
+Ateri
+Atlet
+Atkı
+Atlas
+Ayna
+Ayakkabı
+Aspiratör
+Araba
+Anten
+Ampul
+Amerikan servisi
+Allık
+Albüm
+Bagaj
+Bağlama
+Bavul
+Balta
+Balata
+Bahçe makası
+Balyoz
+Bank
+Bandana
+Banyo dolabı
+Barut
+Barometre
+Basınçölçer
+Bandaj
+Basketbol topu
+Battaniye
+Bayrak
+Bez
+Bebek bezi
+Bere
+Beslenme çantası
+Beşik
+Bıçkı
+Biblo
+Biberon
+Biçerdöver
+Bilardo topu
+Bilardo masası
+Bileklik
+Bilgisayar
+Bilet
+Bilezik
+Bilye
+Bigudi
+Bikini
+Bluz
+Blender
+Bobin
+Boncuk
+Bordür
+Boru
+Borazan
+Bornoz
+Boya
+Boy aynası
+Bovling topu
+Boyunluk
+Böcek ilacı
+Bozuk para
+Branda
+Bulaşıklık
+Buzdolabı
+Buzluk
+Buz pateni
+Büstiyer
+Büyüteç
+Basgitar
+Bulaşık süngeri
+Bant
+Bot
+Bebek arabası
+Cam
+Ceket
+Cüzdan
+Cetvel
+Cep defteri
+Cep telefonu
+Cepken
+Cep sodası
+Cep sobası
+Cönk
+Cezve
+Cop
+Cübbe
+Cımbız
+Cezve
+Cirit
+Cila
+Can yeleği
+Conta
+Cam sileceği
+Cam yünü
+Cıvata
+Cam şişe
+Canavar düdüğü
+çaydanlık
+çatal
+çadır
+çekiç
+çanta
+çöp kutusu
+çakmak
+Daktilo
+Dürbün
+Davul
+Dikiş Makinesi
+Dergi
+Döşek
+Duvak
+Duvar Saati
+Düdüklü Tencere
+Dümbelek
+Dizlik
+Diş Macunu
+Diş Fırçası
+Dolap
+Dolma Kalem
+Darbuka
+Dantel
+Duş Perdesi
+Düdük
+Dümen
+Dalgıç Tüpü
+Elbise
+Eldiven
+Ekmek
+El feneri
+El çantası
+Ev
+Elektrik süpürgesi
+Ekmek kızartma makinesi
+El blenderi
+Elmas
+El havlusu
+El kremi
+El freni
+El aynası
+El çırpıcısı
+El yapımı vazo
+Elmas bilezik
+El örgüsü kazak
+El dezenfektanı
+El aleti
+Elektrik panosu
+Ekmek bıçağı
+El yapımı kilim
+Elek
+El testeresi
+Ekran
+Ekose örtü
+Eldiven kutusu
+El ısıtıcısı
+Elektrik prizi
+Ekmek kutusu
+El dikiş makinesi
+Elektrikli battaniye
+El çantası askısı
+El sanatları kitabı
+Elbise dolabı
+El yapımı süs eşyası
+El yapımı yastık
+Elektrik sayacı
+Elmas kolye
+El fırını
+Eldiven askısı
+Elma dilimleyici
+El çantası organizeri
+El ısıtıcı pedi
+El kremi kutusu
+El dokuma halı
+Elektrikli tıraş makinesi
+El çantası cüzdanı
+El askısı
+El yapımı takı
+Elbise askısı
+El dikiş seti
+Elektrikli ısıtıcı
+El dezenfektan spreyi
+El arabası
+El fırçası
+Elektrik şalteri
+Elma soyucu
+Elektrikli su ısıtıcısı
+El dokuma örtü
+El yapımı kase
+El ısıtıcı torbası
+El çantası kilidi
+El yapımı çanta
+Elektronik anahtar
+Ekmek sepeti
+Elektrikli vantilatör
+Elmas bileklik
+El termosu
+Elektrik kablosu
+El haritası
+Elektrikli diş fırçası
+El yapımı mumluk
+El işi defteri
+El süpürgesi
+Elektronik saat
+El tipi klima
+El yapımı kutu
+Elektrik dağıtım kutusu
+Eldiven klipsi
+Elektrikli ocak
+Ekmek küreği
+Elektrikli motor
+El yapımı kâğıt
+Elmas kaplama takı
+Elektrikli lamba
+El temizlik bezi
+Eldiven cebi
+El işleme tablosu
+Elektrik anahtarı
+El yapımı çömlek
+El yapımı anahtarlık
+Elektrik panosu kapağı
+Elmas kesici
+Eldiven saklama kabı
+El örgüsü atkı
+Elektrikli kahve değirmeni
+El yapımı duvar süsü
+Elektrikli masa lambası
+Fincan
+Fırın
+Fırça
+Fotoğraf makinesi
+Filtre
+Fener
+Fırın tepsisi
+Flüt
+Fanila
+Fermuar
+Faks makinesi
+Fare (Bilgisayar faresi)
+Filtre kahve makinesi
+Fon perde
+Füme makinesi
+Fırın eldiveni
+Fosforlu kalem
+Faks kağıdı
+Fön makinesi
+Fiş (Elektrik fişi)
+Fiskos sehpası
+File çanta
+Flomaster
+Fincan tabağı
+Fırın kabı
+Fransız tavası (Derin tava)
+Filtre torbası
+Fan
+Fırın kağıdı
+Fiskos masası
+Flanel çarşaf
+Fotoğraf albümü
+Filtre süzgeci
+Fiyonk toka
+Fırfırlı örtü
+Filet bıçak
+Fırın ızgarası
+Fan çarkı
+Fasulye doğrayıcı
+Fayans temizleyici
+Fıçı
+Filtre kahve kupası
+Fermuarlı çanta
+Filet demiri (Balıkçılıkta kullanılır)
+Fırdöndü (Balıkçılık ekipmanı)
+Fren balatası
+Fiyat etiketi
+File sepet
+Fırın çekmece
+Fermuarlı dosya
+Gaz Lambası
+Gazete
+Galoş
+Giysi Dolabı
+Gözlük
+Gardırop
+Gözlük kabı
+Gece Lambası
+Güneş Gözlüğü
+Gelinlik
+Halı
+Havlu
+Hırka
+Hurç
+Halka
+Hasır
+havuz
+Hoparlör
+Hamak
+Havan
+Helezon
+Hazne
+Hortum
+Harita
+Hediye paketi
+Başlangıç
+Heykel
+Hububat değirmeni
+Hazır giyim
+Havuz merdiveni
+Haşere fikri
+Hemşire forması
+Huni
+Hamur açma makinesi
+Hamur yoğurma kabı
+Hacıyatmaz
+Hız Kaydedicisi
+Hesap makinesi
+Hırdavat
+Hediye kartı
+Hidrofor
+Hidrolik Kriko
+Hidrojen tüpü
+Hurdalık Malzeme
+Halat
+Hazneli süpürge
+Havya
+Hava filtresi
+Hekim Önlüğü
+İğne
+iPhone
+İbrik
+İp
+iPad
+İpek kumaş
+İskambil kağıdı
+İspirto ocağı
+İstavroz anahtar
+İmla kılavuzu (kitap)
+İlaç kutusu
+İncili kolye
+İndüksiyon ocağı
+İplik makarası
+İsimlik (masa üzeri)
+İskemle (tabure)
+İncili bileklik
+İkili priz
+İleri vites kolu (araçlarda)
+İçecek termosu
+İç cep telefonu kılıfı
+İbrik
+Jakuzi
+Jeton
+Jilet
+Jaluzi
+Jet Uçağı
+Jöle
+Jarse Kumaş
+Kalem
+Kanepe
+Karton
+Kazan
+Kase
+Katlanır masa
+Katlanır sandalye
+Kitap
+Klavye
+Klima
+Kol saatı
+Koltuk
+Konserve açacağı
+Kova
+Kukla
+Kumanda
+Kuş kafesi
+Küpe
+Küvet
+Lamba
+Laptop
+Lastik
+Lazımlık
+Led ışık
+Lens
+Levye
+Leğen
+Lokma anahtarı
+Lavabo
+Lüks lambası
+Limon sıkacağı
+Lif (Banyo lifi)
+Lale deseni
+Limonluk
+Lokumluk
+Lamba şapkası
+Lastik bant
+Lacivert kalem
+Lamba anahtarı
+Masa
+Minder
+Mutfak Robotu
+Merdiven
+Mangal
+Matara
+Makas
+Nargile
+Nazar boncuğu
+Nevresim
+Not defteri
+Nasır taşı
+Navigasyon cihazı
+Numaratör
+Neopren eldiven
+Nikah defteri
+Nakış makinesi
+Naylon poşet
+Nazarlık
+Nişan yüzüğü
+Nişancı dürbünü
+Notluk
+Notebook
+Önlük
+Ölçek
+Örtü
+Örs
+Öreke
+Ok
+ocak
+otağ
+oje
+org
+oturak
+papuç
+Palto
+Pantolon
+Para
+Pastil
+Peçete
+Peçetelik
+Pencere
+Perde
+Pervane
+Pike
+Pipet
+Piston
+Piyano
+Planör
+Pompa
+Pudra
+Pamuk
+Pasaport
+Paten
+Pul
+Pulluk
+Pelerin
+Pense
+Pergel
+Pil
+Ranza
+Raf
+radyo
+Rende
+Ruj
+Raptiye
+Rimel
+Rakı bardağı
+Raket
+Ray
+Resim defteri
+Resim
+Robot
+Rulo
+radar
+Rahle
+rüzgar gülü
+Roket
+Rakı şişesi
+Rozet
+radyatör
+Robot süpürge
+Resim tablosu
+Römork
+Resim çantası
+reçete
+Rüzgarlık
+resim çerçevesi
+Ramazan davulu
+Reklam panosu
+Resim kalemi
+Rulo peçete
+resim fırçası
+Resim kağıdı
+Rulo kağıt
+Raflık
+Rastık
+Resim paleti
+resim tahtası
+reflektör
+rulet
+Ruhsat
+Roman kitabı
+Resim tuvali
+renk paleti
+Reçel kavanozu
+Rüya kapanı
+rulo havlu
+Ranzalı yatak
+röle
+Rüzgargülü
+röntgen cihazı
+rulo kağıdı
+resimlik
+sehpa
+sedir
+sandalet
+salıncak
+sandal
+saat
+suluk
+sürahi
+Şemsiye
+Şezlong
+Şamdan
+Şişe
+Şofben
+Şnorkel
+Şifonyer
+Şilte
+Şarj aleti
+Şırınga
+Şanzıman
+Şiş
+Şampuan
+Şapka
+Şömine
+Şablon
+Şekerlik
+Şiraze
+Şal
+Şalvar
+Şort
+Vazo
+Vestiyer
+Vantilatör
+Valiz
+Vitrin
+Video oynatıcı
+Vana
+Varil
+Valf
+Vatka
+Vida
+Vidanjör
+Viyola
+Viyolonsel
+Vuraç
+Vargel
+Vernik
+Vinç
+Yağdanlık
+Yağlı Boya
+Yağmurluk
+Yastık
+Yaşmak
+Yat
+Yatak
+Yatak Örtüsü
+Yazma
+Yelek
+Yelken
+Yelpaze
+Yalak
+Yorgan
+Yular
+Yumurtalık
+Yün
+Yüzük
+Yangın Söndürme Tüpü
+Yapboz
+Yağmurluk
+Yakacak
+Yama
+Yapıştırıcı
+Yay
+Yazar Kasa
+Yazı Tahtası
+Yumak
+Yüksük
+Yün
+Yorgan İğnesi
+Yorgan
+Yemeni
+Yemek Masası
+Yemek Tabağı
+Yelkenli
+Ziynet
+Zigon
+Zıbın
+Zamk
+Zar
+Zard
+Zemberek
+Zambil
+Zeplin
+Zımba
+Zımpara
+Zıpkın
+Zırh
+Zift
+Zil
+Zincir
+Zurna
+Zümrüt
+zarif
