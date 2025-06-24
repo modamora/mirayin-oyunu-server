@@ -1,4 +1,4 @@
-// ✅ Güncellenmiş server.js - çok oyunculu, tekrar etmeyen harfli, oda ve bağlantı kontrolü destekli
+// ✅ server.js - sağlam çok oyunculu, dinamik odalı, harf tekrar etmeyen, bağlantı güvenli sunucu
 
 const express = require("express");
 const http = require("http");
@@ -9,12 +9,12 @@ const path = require("path");
 
 const app = express();
 app.use(cors());
-
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: { origin: "*", methods: ["GET", "POST"] },
 });
 
+// ✅ Kelime verileri yükle
 const kelimeKategorileri = ["isimler", "sehirler", "hayvanlar", "bitkiler", "esyalar"];
 const kelimeListeleri = {};
 kelimeKategorileri.forEach((kategori) => {
@@ -26,15 +26,8 @@ kelimeKategorileri.forEach((kategori) => {
   kelimeListeleri[kategori] = new Set(veriler);
 });
 
-// Oda bilgileri
-const odalar = {
-  "oda1": {
-    oyuncular: [],            // { id, isim }
-    hazirOyuncular: [],
-    cevaplarListesi: {},
-    kullanilanHarfler: []
-  }
-};
+// ✅ Her oda için ayrı veri
+const odalar = {}; // odaAdı -> { oyuncular[], cevaplar{}, harfler[], hazirOyuncular[] }
 
 function rastgeleHarfSec(kullanilanlar) {
   const harfler = [..."ABCÇDEFGHIİJKLMNOÖPRSŞTUÜVYZ"];
@@ -52,6 +45,15 @@ io.on("connection", (socket) => {
     socket.data.isim = isim;
     socket.data.oda = oda;
     socket.join(oda);
+
+    if (!odalar[oda]) {
+      odalar[oda] = {
+        oyuncular: [],
+        hazirOyuncular: [],
+        cevaplarListesi: {},
+        kullanilanHarfler: []
+      };
+    }
 
     const odaData = odalar[oda];
     odaData.oyuncular.push({ id: socket.id, isim });
@@ -87,21 +89,21 @@ io.on("connection", (socket) => {
 
     odaData.cevaplarListesi[socket.id] = {
       isim: veri.isim,
-      cevaplar: veri.cevaplar,
+      cevaplar: veri.cevaplar
     };
 
     if (Object.keys(odaData.cevaplarListesi).length === odaData.oyuncular.length) {
       const herkeseSonuclar = {};
+      const aktifHarf = odaData.kullanilanHarfler.slice(-1)[0]?.toLowerCase() || "";
 
       Object.entries(odaData.cevaplarListesi).forEach(([id, { isim, cevaplar }]) => {
         let puanlar = {};
         let toplam = 0;
-        const harf = odaData.kullanilanHarfler.slice(-1)[0].toLowerCase();
 
         ["isim", "şehir", "hayvan", "bitki", "eşya"].forEach((kat) => {
           const cevap = (cevaplar[kat] || "").trim().toLowerCase();
           const kategoriKey = kat === "şehir" ? "sehirler" : kat === "eşya" ? "esyalar" : `${kat}ler`;
-          const gecerli = cevap.startsWith(harf) && kelimeListeleri[kategoriKey].has(cevap);
+          const gecerli = cevap.startsWith(aktifHarf) && kelimeListeleri[kategoriKey].has(cevap);
 
           const ayni = Object.entries(odaData.cevaplarListesi).some(
             ([digerId, diger]) =>
@@ -116,17 +118,18 @@ io.on("connection", (socket) => {
         herkeseSonuclar[id] = { isim, cevaplar, puanlar, toplam };
       });
 
+      // Herkese kişisel ve genel puanlar gönder
       Object.entries(herkeseSonuclar).forEach(([id, ben]) => {
         const tumPuanlar = Object.values(herkeseSonuclar).map((o) => ({
           isim: o.isim,
-          toplam: o.toplam
+          toplam: o.toplam,
         }));
 
         io.to(id).emit("puanSonucu", {
           benim: ben.cevaplar,
           puanlar: ben.puanlar,
           toplam: ben.toplam,
-          tumPuanlar
+          tumPuanlar,
         });
       });
 
@@ -144,6 +147,7 @@ io.on("connection", (socket) => {
       odaData.oyuncular = odaData.oyuncular.filter((o) => o.id !== socket.id);
       odaData.hazirOyuncular = odaData.hazirOyuncular.filter((id) => id !== socket.id);
       delete odaData.cevaplarListesi[socket.id];
+
       io.to(oda).emit("oyuncuListesi", odaData.oyuncular.map((o) => o.isim));
       io.to(oda).emit("mesaj", `${oyuncu.isim} oyundan ayrıldı`);
     }
