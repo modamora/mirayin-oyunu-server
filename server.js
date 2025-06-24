@@ -1,4 +1,4 @@
-// ✅ server.js - 10 oyuncuya kadar destekleyen, tekrar etmeyen harfli Socket.IO sunucusu
+// ✅ GÜNCELLENMİŞ server.js - Tüm oyuncuların puanları ve kelime doğrulaması eklenmiş
 
 const express = require("express");
 const http = require("http");
@@ -12,26 +12,27 @@ app.use(cors());
 
 const server = http.createServer(app);
 const io = new Server(server, {
-  cors: {
-    origin: "*",
-    methods: ["GET", "POST"],
-  },
+  cors: { origin: "*", methods: ["GET", "POST"] },
 });
 
 let oyuncular = [];
 let hazirOyuncular = [];
-let cevaplarListesi = {}; // { socket.id: { isim, cevaplar } }
+let cevaplarListesi = {};
 let kullanilanHarfler = [];
 
-// 🔤 Harf seçimi - tekrar etmeyecek
+// ✔️ Kelime listelerini oku
+const kelimeler = {
+  isim: new Set(fs.readFileSync(path.join(__dirname, "kelimeler/isimler.txt"), "utf-8").split(/\r?\n/).map(s => s.trim().toLowerCase())),
+  şehir: new Set(fs.readFileSync(path.join(__dirname, "kelimeler/sehirler.txt"), "utf-8").split(/\r?\n/).map(s => s.trim().toLowerCase())),
+  hayvan: new Set(fs.readFileSync(path.join(__dirname, "kelimeler/hayvanlar.txt"), "utf-8").split(/\r?\n/).map(s => s.trim().toLowerCase())),
+  bitki: new Set(fs.readFileSync(path.join(__dirname, "kelimeler/bitkiler.txt"), "utf-8").split(/\r?\n/).map(s => s.trim().toLowerCase())),
+  eşya: new Set(fs.readFileSync(path.join(__dirname, "kelimeler/esyalar.txt"), "utf-8").split(/\r?\n/).map(s => s.trim().toLowerCase())),
+};
+
 function rastgeleHarfSec() {
   const harfler = [..."ABCÇDEFGHIİJKLMNOÖPRSŞTUÜVYZ"];
   const kalan = harfler.filter((h) => !kullanilanHarfler.includes(h));
-
-  if (kalan.length === 0) {
-    kullanilanHarfler = []; // yeniden başlat
-  }
-
+  if (kalan.length === 0) kullanilanHarfler = [];
   const secimListesi = kalan.length > 0 ? kalan : harfler;
   const secilen = secimListesi[Math.floor(Math.random() * secimListesi.length)];
   kullanilanHarfler.push(secilen);
@@ -39,25 +40,15 @@ function rastgeleHarfSec() {
 }
 
 io.on("connection", (socket) => {
-  console.log("🔌 Yeni bağlantı:", socket.id);
-
   socket.on("yeniOyuncu", (isim) => {
     socket.data.isim = isim;
     oyuncular.push({ id: socket.id, isim });
-    console.log("➕ Yeni Oyuncu:", isim);
-
-    io.emit("oyuncuListesi", oyuncular.map((o) => o.isim));
-
-    if (oyuncular.length >= 2 && oyuncular.length <= 10) {
-      io.emit("oyunaBasla");
-    }
+    io.emit("oyuncuListesi", oyuncular.map(o => o.isim));
+    if (oyuncular.length >= 2 && oyuncular.length <= 10) io.emit("oyunaBasla");
   });
 
   socket.on("hazir", () => {
-    if (!hazirOyuncular.includes(socket.id)) {
-      hazirOyuncular.push(socket.id);
-    }
-
+    if (!hazirOyuncular.includes(socket.id)) hazirOyuncular.push(socket.id);
     if (hazirOyuncular.length === oyuncular.length) {
       const harf = rastgeleHarfSec();
       io.emit("harf", harf);
@@ -72,54 +63,50 @@ io.on("connection", (socket) => {
     };
 
     if (Object.keys(cevaplarListesi).length === oyuncular.length) {
-      // Her oyuncunun cevabı geldiyse karşılaştır ve puanla
-      const cevapKopyasi = { ...cevaplarListesi };
-      Object.entries(cevapKopyasi).forEach(([id, { isim, cevaplar }]) => {
-        const digerleri = Object.entries(cevapKopyasi).filter(
-          ([digerId]) => digerId !== id
-        );
+      const tumPuanlar = {};
 
+      for (const [id, { isim, cevaplar }] of Object.entries(cevaplarListesi)) {
         let puanlar = {};
         let toplam = 0;
 
         ["isim", "şehir", "hayvan", "bitki", "eşya"].forEach((kat) => {
-          const benim = (cevaplar[kat] || "").toLowerCase().trim();
-          if (!benim) {
+          const girilen = (cevaplar[kat] || "").toLowerCase().trim();
+          if (!girilen || !kelimeler[kat].has(girilen)) {
             puanlar[kat] = 0;
             return;
           }
-
-          const ayniCevapVar = digerleri.some(
-            ([_, { cevaplar: r }]) => (r[kat] || "").toLowerCase().trim() === benim
-          );
-
-          puanlar[kat] = ayniCevapVar ? 5 : 10;
+          const digerCevaplar = Object.entries(cevaplarListesi).filter(([oid]) => oid !== id);
+          const ayniVar = digerCevaplar.some(([_, o]) => (o.cevaplar[kat] || "").toLowerCase().trim() === girilen);
+          puanlar[kat] = ayniVar ? 5 : 10;
           toplam += puanlar[kat];
         });
 
-        // Bir kişiye gönder
-        const rakip = digerleri.map(([_, r]) => ({ isim: r.isim, cevaplar: r.cevaplar }));
-        io.to(id).emit("puanSonucu", {
-          benim: cevaplar,
-          rakip: rakip[0] || {},
+        tumPuanlar[id] = {
+          isim,
+          cevaplar,
           puanlar,
-          toplam,
-          rakipToplam: 0,
+          toplam
+        };
+      }
+
+      // herkese gönder
+      for (const [id, veri] of Object.entries(tumPuanlar)) {
+        io.to(id).emit("puanSonucu", {
+          benim: veri.cevaplar,
+          puanlar: veri.puanlar,
+          toplam: veri.toplam,
+          herkes: Object.values(tumPuanlar).map(v => ({ isim: v.isim, puan: v.toplam }))
         });
-      });
+      }
 
       cevaplarListesi = {};
     }
   });
 
   socket.on("disconnect", () => {
-    const oyuncu = oyuncular.find((o) => o.id === socket.id);
-    if (oyuncu) {
-      oyuncular = oyuncular.filter((o) => o.id !== socket.id);
-      hazirOyuncular = hazirOyuncular.filter((id) => id !== socket.id);
-      delete cevaplarListesi[socket.id];
-      console.log("❌ Ayrıldı:", oyuncu.isim);
-    }
+    oyuncular = oyuncular.filter(o => o.id !== socket.id);
+    hazirOyuncular = hazirOyuncular.filter(id => id !== socket.id);
+    delete cevaplarListesi[socket.id];
   });
 });
 
