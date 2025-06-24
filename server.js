@@ -41,12 +41,20 @@ io.on("connection", (socket) => {
   console.log("🔌 Yeni bağlantı:", socket.id);
 
   socket.on("yeniOyuncu", (isim) => {
-    socket.data.isim = isim;
-    oyuncular.push({ id: socket.id, isim });
-    console.log("🧑 Yeni Oyuncu:", isim);
+  socket.data.isim = isim;
 
-    if (oyuncular.length >= 2) {
-      io.emit("oyunaBasla");
+  // Daha önce eklenmemişse listeye ekle ve hoşgeldin mesajı gönder
+  if (!oyuncular.some(o => o.id === socket.id)) {
+    oyuncular.push({ id: socket.id, isim });
+
+    // ✅ Sadece ilk kez giren oyuncuya hoşgeldin mesajı
+    socket.emit("mesaj", `Hoşgeldin ${isim}, keyifli oyunlar!`);
+    socket.broadcast.emit("mesaj", `${isim} oyuna katıldı`);
+  }
+
+  if (oyuncular.length >= 2) {
+    io.emit("oyunaBasla");
+    console.log("🟢 Oyuna başla mesajı gönderildi!");
     }
   });
 
