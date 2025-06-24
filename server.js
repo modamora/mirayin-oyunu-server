@@ -1,3 +1,5 @@
+// ✅ server.js - 10 oyuncuya kadar destekleyen, tekrar etmeyen harfli Socket.IO sunucusu
+
 const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
@@ -12,49 +14,42 @@ const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
     origin: "*",
-    methods: ["GET", "POST"]
-  }
+    methods: ["GET", "POST"],
+  },
 });
-
-// ✅ Kelimeleri yükle
-function kelimeleriYukle(dosyaAdi) {
-  const dosyaYolu = path.join(__dirname, "kelimeler", dosyaAdi);
-  return fs.readFileSync(dosyaYolu, "utf-8")
-    .split("\n")
-    .map(k => k.trim().toLowerCase())
-    .filter(k => k.length > 0);
-}
-
-const kelimeListeleri = {
-  isim: kelimeleriYukle("isimler.txt"),
-  şehir: kelimeleriYukle("sehirler.txt"),
-  hayvan: kelimeleriYukle("hayvanlar.txt"),
-  bitki: kelimeleriYukle("bitkiler.txt"),
-  eşya: kelimeleriYukle("esyalar.txt")
-};
 
 let oyuncular = [];
 let hazirOyuncular = [];
-let cevaplarListesi = {};
+let cevaplarListesi = {}; // { socket.id: { isim, cevaplar } }
+let kullanilanHarfler = [];
+
+// 🔤 Harf seçimi - tekrar etmeyecek
+function rastgeleHarfSec() {
+  const harfler = [..."ABCÇDEFGHIİJKLMNOÖPRSŞTUÜVYZ"];
+  const kalan = harfler.filter((h) => !kullanilanHarfler.includes(h));
+
+  if (kalan.length === 0) {
+    kullanilanHarfler = []; // yeniden başlat
+  }
+
+  const secimListesi = kalan.length > 0 ? kalan : harfler;
+  const secilen = secimListesi[Math.floor(Math.random() * secimListesi.length)];
+  kullanilanHarfler.push(secilen);
+  return secilen;
+}
 
 io.on("connection", (socket) => {
   console.log("🔌 Yeni bağlantı:", socket.id);
 
   socket.on("yeniOyuncu", (isim) => {
-  socket.data.isim = isim;
-
-  // Daha önce eklenmemişse listeye ekle ve hoşgeldin mesajı gönder
-  if (!oyuncular.some(o => o.id === socket.id)) {
+    socket.data.isim = isim;
     oyuncular.push({ id: socket.id, isim });
+    console.log("➕ Yeni Oyuncu:", isim);
 
-    // ✅ Sadece ilk kez giren oyuncuya hoşgeldin mesajı
-    socket.emit("mesaj", `Hoşgeldin ${isim}, keyifli oyunlar!`);
-    socket.broadcast.emit("mesaj", `${isim} oyuna katıldı`);
-  }
+    io.emit("oyuncuListesi", oyuncular.map((o) => o.isim));
 
-  if (oyuncular.length >= 2) {
-    io.emit("oyunaBasla");
-    console.log("🟢 Oyuna başla mesajı gönderildi!");
+    if (oyuncular.length >= 2 && oyuncular.length <= 10) {
+      io.emit("oyunaBasla");
     }
   });
 
@@ -63,10 +58,9 @@ io.on("connection", (socket) => {
       hazirOyuncular.push(socket.id);
     }
 
-    if (hazirOyuncular.length === oyuncular.length && oyuncular.length > 0) {
-      const harfler = [..."ABCÇDEFGHIİJKLMNOÖPRSŞTUÜVYZ"];
-      const secilenHarf = harfler[Math.floor(Math.random() * harfler.length)];
-      io.emit("harf", secilenHarf);
+    if (hazirOyuncular.length === oyuncular.length) {
+      const harf = rastgeleHarfSec();
+      io.emit("harf", harf);
       hazirOyuncular = [];
     }
   });
@@ -74,53 +68,44 @@ io.on("connection", (socket) => {
   socket.on("cevaplar", (veri) => {
     cevaplarListesi[socket.id] = {
       isim: veri.isim,
-      cevaplar: veri.cevaplar
+      cevaplar: veri.cevaplar,
     };
 
-    if (Object.keys(cevaplarListesi).length === 2) {
-      const [id1, id2] = Object.keys(cevaplarListesi);
-      const o1 = cevaplarListesi[id1];
-      const o2 = cevaplarListesi[id2];
+    if (Object.keys(cevaplarListesi).length === oyuncular.length) {
+      // Her oyuncunun cevabı geldiyse karşılaştır ve puanla
+      const cevapKopyasi = { ...cevaplarListesi };
+      Object.entries(cevapKopyasi).forEach(([id, { isim, cevaplar }]) => {
+        const digerleri = Object.entries(cevapKopyasi).filter(
+          ([digerId]) => digerId !== id
+        );
 
-      const kategoriler = ["isim", "şehir", "hayvan", "bitki", "eşya"];
-      const puan1 = {}, puan2 = {};
-      let toplam1 = 0, toplam2 = 0;
+        let puanlar = {};
+        let toplam = 0;
 
-      kategoriler.forEach(kat => {
-        const c1 = (o1.cevaplar[kat] || "").toLowerCase().trim();
-        const c2 = (o2.cevaplar[kat] || "").toLowerCase().trim();
+        ["isim", "şehir", "hayvan", "bitki", "eşya"].forEach((kat) => {
+          const benim = (cevaplar[kat] || "").toLowerCase().trim();
+          if (!benim) {
+            puanlar[kat] = 0;
+            return;
+          }
 
-        const ayni = c1 === c2 && c1 !== "";
+          const ayniCevapVar = digerleri.some(
+            ([_, { cevaplar: r }]) => (r[kat] || "").toLowerCase().trim() === benim
+          );
 
-        const kelimeGecerli = (kelime) =>
-          kelime &&
-          kelime.startsWith(c1[0]) &&
-          kelimeListeleri[kat]?.includes(kelime);
+          puanlar[kat] = ayniCevapVar ? 5 : 10;
+          toplam += puanlar[kat];
+        });
 
-        const gecerli1 = kelimeGecerli(c1);
-        const gecerli2 = kelimeGecerli(c2);
-
-        puan1[kat] = gecerli1 ? (ayni ? 5 : 10) : 0;
-        puan2[kat] = gecerli2 ? (ayni ? 5 : 10) : 0;
-
-        toplam1 += puan1[kat];
-        toplam2 += puan2[kat];
-      });
-
-      io.to(id1).emit("puanSonucu", {
-        benim: o1.cevaplar,
-        rakip: { isim: o2.isim, cevaplar: o2.cevaplar },
-        puanlar: puan1,
-        toplam: toplam1,
-        rakipToplam: toplam2
-      });
-
-      io.to(id2).emit("puanSonucu", {
-        benim: o2.cevaplar,
-        rakip: { isim: o1.isim, cevaplar: o1.cevaplar },
-        puanlar: puan2,
-        toplam: toplam2,
-        rakipToplam: toplam1
+        // Bir kişiye gönder
+        const rakip = digerleri.map(([_, r]) => ({ isim: r.isim, cevaplar: r.cevaplar }));
+        io.to(id).emit("puanSonucu", {
+          benim: cevaplar,
+          rakip: rakip[0] || {},
+          puanlar,
+          toplam,
+          rakipToplam: 0,
+        });
       });
 
       cevaplarListesi = {};
@@ -128,9 +113,13 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
-    oyuncular = oyuncular.filter(o => o.id !== socket.id);
-    hazirOyuncular = hazirOyuncular.filter(id => id !== socket.id);
-    delete cevaplarListesi[socket.id];
+    const oyuncu = oyuncular.find((o) => o.id === socket.id);
+    if (oyuncu) {
+      oyuncular = oyuncular.filter((o) => o.id !== socket.id);
+      hazirOyuncular = hazirOyuncular.filter((id) => id !== socket.id);
+      delete cevaplarListesi[socket.id];
+      console.log("❌ Ayrıldı:", oyuncu.isim);
+    }
   });
 });
 
