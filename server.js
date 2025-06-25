@@ -1,6 +1,3 @@
-// server.js - 3 maddeye göre tam güncellenmiş Socket.IO sunucusu
-to=canmore.create_textdoc
-
 const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
@@ -16,7 +13,6 @@ const io = new Server(server, {
   cors: { origin: "*", methods: ["GET", "POST"] },
 });
 
-// Kelime listelerini yükle
 const kelimeKategorileri = ["isimler", "sehirler", "hayvanlar", "bitkiler", "esyalar"];
 const kelimeListeleri = {};
 kelimeKategorileri.forEach((kategori) => {
@@ -28,8 +24,16 @@ kelimeKategorileri.forEach((kategori) => {
   kelimeListeleri[kategori] = new Set(veriler);
 });
 
-// Odalar: dinamik olarak oluşturulur
-const odalar = {}; // { odaAdi: { oyuncular: [], hazirOyuncular: [], cevaplarListesi: {}, kullanilanHarfler: [] } }
+const odalar = {}; // oda adı: { oyuncular: [], hazirOyuncular: [], cevaplarListesi: {}, kullanilanHarfler: [] }
+
+// 🆕 Tüm aktif odaları listele
+function odaListesiniYay() {
+  const aktifOdalar = Object.entries(odalar).map(([odaAdi, odaData]) => ({
+    oda: odaAdi,
+    oyuncuSayisi: odaData.oyuncular.length,
+  }));
+  io.emit("odaListesi", aktifOdalar);
+}
 
 function rastgeleHarfSec(kullanilanlar) {
   const harfler = [..."ABCÇDEFGHIİJKLMNOÖPRSŞTUÜVYZ"];
@@ -41,12 +45,11 @@ function rastgeleHarfSec(kullanilanlar) {
 }
 
 io.on("connection", (socket) => {
-  console.log("🔌 Bağlandı:", socket.id);
+  console.log("🔌 Bağlantı:", socket.id);
 
   socket.on("yeniOyuncu", ({ isim, oda }) => {
     socket.data.isim = isim;
     socket.data.oda = oda;
-    socket.join(oda);
 
     if (!odalar[oda]) {
       odalar[oda] = {
@@ -59,13 +62,12 @@ io.on("connection", (socket) => {
 
     const odaData = odalar[oda];
     odaData.oyuncular.push({ id: socket.id, isim });
+    socket.join(oda);
 
-    console.log(`👤 ${isim} katıldı (${oda})`);
+    console.log(`👤 ${isim} ${oda} odasına katıldı`);
     io.to(oda).emit("oyuncuListesi", odaData.oyuncular.map(o => o.isim));
 
-    if (odaData.oyuncular.length >= 2) {
-      io.to(oda).emit("oyunaBasla");
-    }
+    odaListesiniYay(); // herkese oda listesi gönder
   });
 
   socket.on("hazir", () => {
@@ -106,10 +108,10 @@ io.on("connection", (socket) => {
           const cevap = (cevaplar[kat] || "").trim().toLowerCase();
           const kategoriKey = kat === "şehir" ? "sehirler" : kat === "eşya" ? "esyalar" : `${kat}ler`;
           const gecerli = cevap.startsWith(harf) && kelimeListeleri[kategoriKey].has(cevap);
-
           const ayni = Object.entries(odaData.cevaplarListesi).some(
             ([digerId, diger]) =>
-              digerId !== id && (diger.cevaplar[kat] || "").trim().toLowerCase() === cevap
+              digerId !== id &&
+              (diger.cevaplar[kat] || "").trim().toLowerCase() === cevap
           );
 
           const puan = gecerli ? (ayni ? 5 : 10) : 0;
@@ -123,14 +125,14 @@ io.on("connection", (socket) => {
       Object.entries(herkeseSonuclar).forEach(([id, ben]) => {
         const tumPuanlar = Object.values(herkeseSonuclar).map((o) => ({
           isim: o.isim,
-          toplam: o.toplam,
+          toplam: o.toplam
         }));
 
         io.to(id).emit("puanSonucu", {
           benim: ben.cevaplar,
           puanlar: ben.puanlar,
           toplam: ben.toplam,
-          tumPuanlar,
+          tumPuanlar
         });
       });
 
@@ -149,8 +151,15 @@ io.on("connection", (socket) => {
       odaData.hazirOyuncular = odaData.hazirOyuncular.filter((id) => id !== socket.id);
       delete odaData.cevaplarListesi[socket.id];
 
-      io.to(oda).emit("oyuncuListesi", odaData.oyuncular.map((o) => o.isim));
+      io.to(oda).emit("oyuncuListesi", odaData.oyuncular.map(o => o.isim));
       io.to(oda).emit("mesaj", `${oyuncu.isim} oyundan ayrıldı`);
+
+      // Oda boş kaldıysa sil
+      if (odaData.oyuncular.length === 0) {
+        delete odalar[oda];
+      }
+
+      odaListesiniYay(); // güncel oda listesini tekrar gönder
     }
   });
 });
