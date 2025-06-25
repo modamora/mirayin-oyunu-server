@@ -47,6 +47,23 @@ function rastgeleHarfSec(kullanilanlar) {
 io.on("connection", (socket) => {
   console.log("🔌 Bağlantı:", socket.id);
 
+  socket.on("oyunuBaslat", () => {
+  const oda = socket.data.oda;
+  const odaData = odalar[oda];
+  if (!odaData) return;
+
+  // Herkes hazır mı kontrolü (isteğe bağlı)
+  if (odaData.hazirOyuncular.length === odaData.oyuncular.length) {
+    const harf = rastgeleHarfSec(odaData.kullanilanHarfler);
+    io.to(oda).emit("harf", harf);
+
+    // Yeni tur için sıfırlama
+    odaData.hazirOyuncular = [];
+    odaData.cevaplarListesi = {};
+  } else {
+    io.to(socket.id).emit("mesaj", "Henüz tüm oyuncular hazır değil.");
+  }
+
   socket.on("yeniOyuncu", ({ isim, oda }) => {
     socket.data.isim = isim;
     socket.data.oda = oda;
