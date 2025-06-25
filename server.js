@@ -1,3 +1,5 @@
+// ✅ Güncellenmiş server.js - Oyunu sadece oda kurucusu başlatır, hazır olanlar bekler
+
 const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
@@ -26,7 +28,6 @@ kelimeKategorileri.forEach((kategori) => {
 
 const odalar = {}; // oda adı: { oyuncular, hazirOyuncular, cevaplarListesi, kullanilanHarfler, kapasite }
 
-// Oda listesini yay
 function odaListesiniYay() {
   const aktifOdalar = Object.entries(odalar).map(([odaAdi, odaData]) => ({
     oda: odaAdi,
@@ -90,9 +91,7 @@ io.on("connection", (socket) => {
     io.to(oda).emit("hazirSayisi", odaData.hazirOyuncular.length);
 
     if (odaData.hazirOyuncular.length === odaData.oyuncular.length) {
-      const harf = rastgeleHarfSec(odaData.kullanilanHarfler);
-      io.to(oda).emit("harf", harf);
-      odaData.hazirOyuncular = [];
+      io.to(oda).emit("hazirlikTamam"); // 🔄 Artık kurucu başlatacak
     }
   });
 
@@ -101,11 +100,9 @@ io.on("connection", (socket) => {
     const odaData = odalar[oda];
     if (!odaData) return;
 
-    if (odaData.oyuncular.length >= odaData.kapasite) {
-      io.to(oda).emit("oyunaBasla");
-    } else {
-      socket.emit("mesaj", "❗ Oda dolmadan oyun başlatılamaz.");
-    }
+    const harf = rastgeleHarfSec(odaData.kullanilanHarfler);
+    io.to(oda).emit("harf", harf);
+    odaData.hazirOyuncular = [];
   });
 
   socket.on("cevaplar", (veri) => {
