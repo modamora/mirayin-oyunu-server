@@ -1,21 +1,38 @@
-Aynısefa
-Anason
-Aslan Pençesi
-Avokado
-Ayrık Otu
-Altın Otu
-Alıç
-Akdiken
-At Kuyruğu
-Ayva
-Böğürtlen Yaprağı
-Böğürtlen Kökü
-Bambu
-Bamya
-Biberiye
-Buğday
-Begonvil
-Begonya
+acı badem
+acı elma
+acı hıyar
+acı karpuz
+acur
+adi alıç
+adi ceviz
+ağaç çileği
+ağaç kavunu
+ahlat
+ahududu
+akdiken
+alca
+alıç
+alma
+altıntop
+amıt
+ananas
+antep fıstığı
+armut
+at kestanesi
+avokado
+ayı üzümü
+aynabakar
+ayva
+badem
+bahçe çileği
+banadura
+bayan
+bektaşi üzümü
+bergamot
+beşbıyık
+bonadura
+Bornova misketi
+böğürtlen
 Çörek mantarı
 Çekirdek
 Çam sakızı
@@ -37,25 +54,15 @@ Ciğer Otu
 Cincile Mantarı
 Civan Perçemi
 Cinnema
-Dulavrat otu
-Dulavrat kökü
-Deniz kadayıfı
-Defne yaprağı
-Dereotu
-Deniz börülcesi
-Daylily
-Defne
-Deve tabanı
-Difenbahya çiçeği
-Dua çiçeği
-Doğuş eriği
-Düğün çiçeği
-Dağ muşmulası
-Dağ çileği
-Darı
-Döngel meyvesi
-Dut
-Dragon meyvesi
+çağla
+çilek
+davulga
+diken dutu
+domat
+domates
+döngel
+drupa
+dut
 Elma
 Erik
 Ebegümeci
@@ -71,7 +78,6 @@ Efelek
 Fasulye
 Fesleğen
 Fındık
-Fındık
 Funda Yaprağı
 Fırça Halısı
 Filbahri
@@ -80,6 +86,8 @@ Frezya Çiçeği
 Ful Çiçeği
 Fulya Çiçeği
 Funda
+frambuaz
+Frenk üzümü
 Gül
 Gardenya
 Gelincik
@@ -118,6 +126,11 @@ Geyik otu
 Gölge sarmaşığı
 Göl çimi
 Göl balığı otu
+greyfurt
+harnıp
+hıyar
+Hint kestanesi
+hurma
 Ihlamur
 Isırgan otu
 Ispanak
@@ -155,23 +168,25 @@ Jüt
 Japon kestanesi
 Jonathan elması
 Jacobaea Vulgaris
-Kabak
-Kahve
-Kantaron
-Kakao
-Karabaş otu
-Karabiber
-Karnabahar
-Kasımpatı
-Katır tırnağı
-Kayın ağacı
-Kaynana dili
-Keçiboynuzu
-Kekik
-Kereviz
-Kenevir
-Kızılcık
-Kuşkonmaz
+kabak
+kahve
+kamkat
+karpuz
+kavun
+kayısı
+keçiboynuzu
+kekreyemiş
+kestane
+kızılcık
+kızmemesi
+kiraz
+kivi
+koca yemiş
+kozak
+kozalak
+kudret narı
+kuru üzüm
+kuşburnu
 Lahana
 Ladin
 Lavanta
@@ -199,6 +214,10 @@ Menekşe
 Mine Çiçeği
 Mısır
 Mazı
+malta eriği
+mavru
+muşmula
+muz
 Nane
 Nar
 Nergis
@@ -217,6 +236,7 @@ Nar Sedefi
 Nadir Otu
 Nazar Boncuğu Çiçeği
 Nişasta Otu
+nektarin
 Okaliptüs
 Oya ağacı
 Orkide
@@ -250,10 +270,16 @@ Papatya
 Petunya
 Pentas
 Portakal
+palamut
+papaya
+patlıcan inciri
 Roka
 Reyhan
 Rezene
 Radika Otu
+salatalık
+siyah frenk üzümü
+somonçileği
 Semizotu
 Süpürge otu
 Söğüt yaprağı
@@ -282,6 +308,7 @@ Süsen
 Şubat çiçeği
 Şemse otu
 Şilep otu
+şeftali
 Şeker pancarı
 Tarhun
 Turunç yaprağı
@@ -292,6 +319,12 @@ Tilki kuyruğu
 Tütün çiçeği
 Tavşan kulağı
 Taflan
+tomat
+tomati
+Trabzon hurması
+tuy
+türbeeriği
+üzüm
 Vişne
 Veronika
 Vanilya
@@ -309,6 +342,8 @@ Yıldız çiçeği
 Yer fıstığı
 Yeni dünya
 Yaban mersini
+yafa
+yemiş
 Zambak
 Zencefil
 Zerdeçal
