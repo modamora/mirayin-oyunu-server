@@ -13,7 +13,7 @@ const io = new Server(server, {
   cors: { origin: "*", methods: ["GET", "POST"] },
 });
 
-// ✔ Kelime veri dosyalarını yükle
+// ✔ Kelime dosyalarını yükle
 const kelimeKategorileri = ["isimler", "sehirler", "hayvanlar", "bitkiler", "esyalar"];
 const kelimeListeleri = {};
 kelimeKategorileri.forEach((kategori) => {
@@ -25,8 +25,8 @@ kelimeKategorileri.forEach((kategori) => {
   kelimeListeleri[kategori] = new Set(veriler);
 });
 
-// ✔ Oda yapısı
-const odalar = {}; // { odaAdi: { oyuncular, hazirOyuncular, cevaplarListesi, kullanilanHarfler, kapasite, oyunBasladi } }
+// ✔ Odalar
+const odalar = {}; // odaAdi: { oyuncular, hazirOyuncular, cevaplarListesi, kullanilanHarfler, kapasite, oyunBasladi }
 
 function odaListesiniYay() {
   const aktifOdalar = Object.entries(odalar).map(([odaAdi, odaData]) => ({
@@ -60,7 +60,7 @@ io.on("connection", (socket) => {
         cevaplarListesi: {},
         kullanilanHarfler: [],
         kapasite: kapasite || 2,
-        oyunBasladi: false
+        oyunBasladi: false,
       };
     }
 
@@ -74,9 +74,7 @@ io.on("connection", (socket) => {
     odaData.oyuncular.push({ id: socket.id, isim });
     socket.join(oda);
 
-    console.log(`👤 ${isim} ${oda} odasına katıldı`);
-    io.to(oda).emit("oyuncuListesi", odaData.oyuncular.map(o => o.isim));
-
+    io.to(oda).emit("oyuncuListesi", odaData.oyuncular.map((o) => o.isim));
     odaListesiniYay();
   });
 
@@ -128,13 +126,20 @@ io.on("connection", (socket) => {
         let puanlar = {};
         let toplam = 0;
 
+        const kategoriKeyMap = {
+          isim: "isimler",
+          şehir: "sehirler",
+          hayvan: "hayvanlar",
+          bitki: "bitkiler",
+          eşya: "esyalar",
+        };
+
         ["isim", "şehir", "hayvan", "bitki", "eşya"].forEach((kat) => {
           const cevap = (cevaplar[kat] || "").trim().toLowerCase();
-          const kategoriKey = kat === "şehir" ? "sehirler" : kat === "eşya" ? "esyalar" : `${kat}ler`;
+          const kategoriKey = kategoriKeyMap[kat];
+          const gecerli = cevap.startsWith(harf) && kelimeListeleri[kategoriKey]?.has(cevap);
 
-          const gecerli = cevap.startsWith(harf) && kelimeListeleri[kategoriKey].has(cevap);
           let puan = 0;
-
           if (gecerli) {
             const ayni = Object.entries(odaData.cevaplarListesi).some(
               ([digerId, diger]) =>
@@ -174,13 +179,13 @@ io.on("connection", (socket) => {
     const odaData = odalar[oda];
     if (!odaData) return;
 
-    const oyuncu = odaData.oyuncular.find(o => o.id === socket.id);
+    const oyuncu = odaData.oyuncular.find((o) => o.id === socket.id);
     if (oyuncu) {
-      odaData.oyuncular = odaData.oyuncular.filter(o => o.id !== socket.id);
-      odaData.hazirOyuncular = odaData.hazirOyuncular.filter(id => id !== socket.id);
+      odaData.oyuncular = odaData.oyuncular.filter((o) => o.id !== socket.id);
+      odaData.hazirOyuncular = odaData.hazirOyuncular.filter((id) => id !== socket.id);
       delete odaData.cevaplarListesi[socket.id];
 
-      io.to(oda).emit("oyuncuListesi", odaData.oyuncular.map(o => o.isim));
+      io.to(oda).emit("oyuncuListesi", odaData.oyuncular.map((o) => o.isim));
       io.to(oda).emit("mesaj", `${oyuncu.isim} oyundan ayrıldı`);
 
       if (odaData.oyuncular.length === 0) {
