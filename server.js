@@ -13,7 +13,7 @@ const io = new Server(server, {
   cors: { origin: "*", methods: ["GET", "POST"] },
 });
 
-// ✔ Kelime dosyalarını yükle
+// ✔ Kelime listelerini yükle
 const kelimeKategorileri = ["isimler", "sehirler", "hayvanlar", "bitkiler", "esyalar"];
 const kelimeListeleri = {};
 kelimeKategorileri.forEach((kategori) => {
@@ -25,8 +25,8 @@ kelimeKategorileri.forEach((kategori) => {
   kelimeListeleri[kategori] = new Set(veriler);
 });
 
-// ✔ Odalar
-const odalar = {}; // odaAdi: { oyuncular, hazirOyuncular, cevaplarListesi, kullanilanHarfler, kapasite, oyunBasladi }
+// ✔ Oda yapısı
+const odalar = {}; // oda: { oyuncular, hazirOyuncular, cevaplarListesi, kullanilanHarfler, kapasite, oyunBasladi, toplamPuanlar }
 
 function odaListesiniYay() {
   const aktifOdalar = Object.entries(odalar).map(([odaAdi, odaData]) => ({
@@ -61,6 +61,7 @@ io.on("connection", (socket) => {
         kullanilanHarfler: [],
         kapasite: kapasite || 2,
         oyunBasladi: false,
+        toplamPuanlar: {} // 🆕 her oyuncu id’si için toplam puan
       };
     }
 
@@ -120,26 +121,28 @@ io.on("connection", (socket) => {
 
     if (Object.keys(odaData.cevaplarListesi).length === odaData.oyuncular.length) {
       const herkeseSonuclar = {};
-      const harf = odaData.kullanilanHarfler.slice(-1)[0].toLowerCase();
+      const harf = odaData.kullanilanHarfler.slice(-1)[0]?.toLowerCase() || "";
+
+      const kategoriKeyMap = {
+        isim: "isimler",
+        şehir: "sehirler",
+        hayvan: "hayvanlar",
+        bitki: "bitkiler",
+        eşya: "esyalar",
+      };
 
       Object.entries(odaData.cevaplarListesi).forEach(([id, { isim, cevaplar }]) => {
         let puanlar = {};
         let toplam = 0;
 
-        const kategoriKeyMap = {
-          isim: "isimler",
-          şehir: "sehirler",
-          hayvan: "hayvanlar",
-          bitki: "bitkiler",
-          eşya: "esyalar",
-        };
-
-        ["isim", "şehir", "hayvan", "bitki", "eşya"].forEach((kat) => {
+        for (const kat of ["isim", "şehir", "hayvan", "bitki", "eşya"]) {
           const cevap = (cevaplar[kat] || "").trim().toLowerCase();
           const kategoriKey = kategoriKeyMap[kat];
-          const gecerli = cevap.startsWith(harf) && kelimeListeleri[kategoriKey]?.has(cevap);
+          const kelimeSet = kelimeListeleri[kategoriKey];
 
+          const gecerli = cevap.startsWith(harf) && kelimeSet?.has(cevap);
           let puan = 0;
+
           if (gecerli) {
             const ayni = Object.entries(odaData.cevaplarListesi).some(
               ([digerId, diger]) =>
@@ -151,21 +154,27 @@ io.on("connection", (socket) => {
 
           puanlar[kat] = puan;
           toplam += puan;
-        });
+        }
+
+        // 🟡 Toplam puanı kaydet
+        if (!odaData.toplamPuanlar[id]) {
+          odaData.toplamPuanlar[id] = 0;
+        }
+        odaData.toplamPuanlar[id] += toplam;
 
         herkeseSonuclar[id] = { isim, cevaplar, puanlar, toplam };
       });
 
       Object.entries(herkeseSonuclar).forEach(([id, ben]) => {
-        const tumPuanlar = Object.values(herkeseSonuclar).map((o) => ({
-          isim: o.isim,
-          toplam: o.toplam,
-        }));
+        const tumPuanlar = Object.entries(odaData.toplamPuanlar).map(([oid, toplam]) => {
+          const o = odaData.oyuncular.find((o) => o.id === oid);
+          return { isim: o?.isim || "Bilinmeyen", toplam };
+        });
 
         io.to(id).emit("puanSonucu", {
           benim: ben.cevaplar,
           puanlar: ben.puanlar,
-          toplam: ben.toplam,
+          toplam: odaData.toplamPuanlar[id],
           tumPuanlar,
         });
       });
@@ -184,6 +193,7 @@ io.on("connection", (socket) => {
       odaData.oyuncular = odaData.oyuncular.filter((o) => o.id !== socket.id);
       odaData.hazirOyuncular = odaData.hazirOyuncular.filter((id) => id !== socket.id);
       delete odaData.cevaplarListesi[socket.id];
+      delete odaData.toplamPuanlar[socket.id];
 
       io.to(oda).emit("oyuncuListesi", odaData.oyuncular.map((o) => o.isim));
       io.to(oda).emit("mesaj", `${oyuncu.isim} oyundan ayrıldı`);
